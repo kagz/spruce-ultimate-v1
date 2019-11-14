@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
+import 'package:spruce/widgets/helpers/screensize.dart';
 
 import './price_tag.dart';
 import './address_tag.dart';
@@ -10,7 +11,7 @@ import '../../scoped-models/main.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
-
+  Screen size;
   ProductCard(this.product);
 
   Widget _buildTitlePriceRow() {
@@ -36,6 +37,7 @@ class ProductCard extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context) {
+    size = Screen(MediaQuery.of(context).size);
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return ButtonBar(
@@ -46,8 +48,7 @@ class ProductCard extends StatelessWidget {
                 color: Theme.of(context).accentColor,
                 onPressed: () {
                   model.selectProduct(product.id);
-                  Navigator
-                      .pushNamed<bool>(context, '/product/' + product.id)
+                  Navigator.pushNamed<bool>(context, '/product/' + product.id)
                       .then((_) => model.selectProduct(null));
                 },
               ),
@@ -68,25 +69,40 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    size = Screen(MediaQuery.of(context).size);
     return Card(
-      child: Column(
-        children: <Widget>[
-          Hero(
-            tag: product.id,
-            child: FadeInImage(
-              image: NetworkImage(product.image),
-              height: 300.0,
-              fit: BoxFit.cover,
-              placeholder: AssetImage('assets/food.jpg'),
+      semanticContainer: true,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      elevation: 4.0,
+      margin: EdgeInsets.all(8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      borderOnForeground: true,
+      child: Container(
+        height: size.getWidthPx(300),
+        width: size.getWidthPx(350),
+        child: Column(
+          children: <Widget>[
+            ClipRRect(
+              // tag: product.id,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12.0),
+                  topRight: Radius.circular(12.0)),
+              child: FadeInImage(
+                image: NetworkImage(product.image),
+                height: 100,
+                width: 370,
+                fit: BoxFit.cover,
+                placeholder: AssetImage('assets/food.jpg'),
+              ),
             ),
-          ),
-          _buildTitlePriceRow(),
-          SizedBox(
-            height: 10.0,
-          ),
-          AddressTag(product.location.address),
-          _buildActionButtons(context)
-        ],
+            _buildTitlePriceRow(),
+            SizedBox(
+              height: 10.0,
+            ),
+            AddressTag(product.location.address),
+            _buildActionButtons(context)
+          ],
+        ),
       ),
     );
   }

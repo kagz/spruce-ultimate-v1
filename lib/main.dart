@@ -14,9 +14,6 @@ import './widgets/helpers/custom_route.dart';
 import './shared/global_config.dart';
 
 void main() {
-  // debugPaintSizeEnabled = true;
-  // debugPaintBaselinesEnabled = true;
-  // debugPaintPointersEnabled = true;
   MapView.setApiKey(API_KEY);
   runApp(MyApp());
 }
@@ -55,7 +52,7 @@ class _MyAppState extends State<MyApp> {
             primarySwatch: Colors.deepOrange,
             accentColor: Colors.deepPurple,
             buttonColor: Colors.deepPurple),
-        // home: AuthPage(),
+
         routes: {
           '/': (BuildContext context) =>
               !_isAuthenticated ? AuthPage() : ProductsPage(_model),
