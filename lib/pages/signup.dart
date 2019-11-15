@@ -98,22 +98,22 @@ class _SignUpPageState extends State<SignUpPage> {
             fontFamily: 'Exo2', fontSize: 36, fontWeight: FontWeight.bold));
   }
 
-  BoxField _nameWidget() {
-    return BoxField(
-        controller: _nameController,
-        focusNode: _nameFocusNode,
-        hintText: "Enter Name",
-        lableText: "Name",
-        obscureText: false,
-        onSaved: (String val) {
-          _name = val;
-        },
-        onFieldSubmitted: (String value) {
-          FocusScope.of(context).requestFocus(_emailFocusNode);
-        },
-        icon: Icons.person,
-        iconColor: colorCurve);
-  }
+  // BoxField _nameWidget() {
+  //   return BoxField(
+  //       controller: _nameController,
+  //       focusNode: _nameFocusNode,
+  //       hintText: "Enter Name",
+  //       lableText: "Name",
+  //       obscureText: false,
+  //       onSaved: (String val) {
+  //         _name = val;
+  //       },
+  //       onFieldSubmitted: (String value) {
+  //         FocusScope.of(context).requestFocus(_emailFocusNode);
+  //       },
+  //       icon: Icons.person,
+  //       iconColor: colorCurve);
+  // }
 
   BoxField _emailWidget() {
     return BoxField(
@@ -201,7 +201,7 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                _nameWidget(),
+                // _nameWidget(),
                 _emailWidget(),
                 _passwordWidget(),
                 _confirmPasswordWidget(),

@@ -9,8 +9,6 @@ import 'package:spruce/widgets/helpers/boxfield.dart';
 import 'package:spruce/widgets/helpers/colors.dart';
 import 'package:spruce/widgets/helpers/screensize.dart';
 
-import 'forgetpassword.dart';
-
 class AuthPage extends StatefulWidget {
   @override
   _AuthPageState createState() => _AuthPageState();
@@ -193,22 +191,7 @@ class _AuthPageState extends State<AuthPage> {
                 _emailWidget(),
                 SizedBox(height: size.getWidthPx(8)),
                 _passwordWidget(),
-                GestureDetector(
-                    onTap: () {
-                      //Navigate to Forgot Password Screen...
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageForgotPassword()));
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(right: size.getWidthPx(24)),
-                      child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text("Forgot Password?",
-                              style: TextStyle(
-                                  fontFamily: 'Exo2', fontSize: 16.0))),
-                    )),
+
                 SizedBox(height: size.getWidthPx(8)),
                 // _loginButtonWidget(),
 
