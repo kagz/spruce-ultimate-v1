@@ -10,6 +10,12 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final Map<String, dynamic> _formData = {
+    'email': null,
+    'password': null,
+    'acceptTerms': false
+  };
+
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -74,7 +80,7 @@ class _SignUpPageState extends State<SignUpPage> {
   RichText _textAccount() {
     return RichText(
       text: TextSpan(
-          text: "Hae you registed already? ",
+          text: "registed already? ",
           children: [
             TextSpan(
               style: TextStyle(color: Colors.deepOrange),
@@ -97,23 +103,6 @@ class _SignUpPageState extends State<SignUpPage> {
         style: TextStyle(
             fontFamily: 'Exo2', fontSize: 36, fontWeight: FontWeight.bold));
   }
-
-  // BoxField _nameWidget() {
-  //   return BoxField(
-  //       controller: _nameController,
-  //       focusNode: _nameFocusNode,
-  //       hintText: "Enter Name",
-  //       lableText: "Name",
-  //       obscureText: false,
-  //       onSaved: (String val) {
-  //         _name = val;
-  //       },
-  //       onFieldSubmitted: (String value) {
-  //         FocusScope.of(context).requestFocus(_emailFocusNode);
-  //       },
-  //       icon: Icons.person,
-  //       iconColor: colorCurve);
-  // }
 
   BoxField _emailWidget() {
     return BoxField(
