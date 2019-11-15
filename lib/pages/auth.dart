@@ -1,127 +1,152 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:spruce/models/auth.dart';
+import 'package:spruce/pages/signup.dart';
+import 'package:spruce/scoped-models/main.dart';
+import 'package:spruce/widgets/helpers/boxfield.dart';
+import 'package:spruce/widgets/helpers/colors.dart';
+import 'package:spruce/widgets/helpers/screensize.dart';
 
-import '../scoped-models/main.dart';
-import '../models/auth.dart';
+import 'forgetpassword.dart';
 
 class AuthPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _AuthPageState();
-  }
+  _AuthPageState createState() => _AuthPageState();
 }
 
-class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
+class _AuthPageState extends State<AuthPage> {
   final Map<String, dynamic> _formData = {
     'email': null,
     'password': null,
     'acceptTerms': false
   };
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _passwordTextController = TextEditingController();
+  TextEditingController _emailController = new TextEditingController();
+  TextEditingController _passwordController = new TextEditingController();
+  FocusNode _emailFocusNode = new FocusNode();
+  FocusNode _passFocusNode = new FocusNode();
+  String _email, _password;
   AuthMode _authMode = AuthMode.Login;
-  AnimationController _controller;
-  Animation<Offset> _slideAnimation;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void initState() {
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 300),
-    );
-    _slideAnimation =
-        Tween<Offset>(begin: Offset(0.0, -1.5), end: Offset.zero).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn),
-    );
-    super.initState();
+  Screen size;
+
+  @override
+  Widget build(BuildContext context) {
+    size = Screen(MediaQuery.of(context).size);
+
+    return Scaffold(
+        backgroundColor: backgroundColor,
+        resizeToAvoidBottomInset: true,
+        body: AnnotatedRegion(
+          value: SystemUiOverlayStyle(
+              statusBarColor: backgroundColor,
+              statusBarBrightness: Brightness.light,
+              statusBarIconBrightness: Brightness.dark,
+              systemNavigationBarIconBrightness: Brightness.light,
+              systemNavigationBarColor: backgroundColor),
+          child: Container(
+            color: Colors.white,
+            child: SafeArea(
+              top: true,
+              bottom: false,
+              child: Stack(fit: StackFit.expand, children: <Widget>[
+                ClipPath(
+                    clipper: BottomShapeClipper(),
+                    child: Container(
+                      color: colorCurve,
+                    )),
+                SingleChildScrollView(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: size.getWidthPx(20),
+                        vertical: size.getWidthPx(20)),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          _loginGradientText(),
+                          SizedBox(height: size.getWidthPx(30)),
+                          _textAccount(),
+                          SizedBox(height: size.getWidthPx(30)),
+                          loginFields()
+                        ]),
+                  ),
+                )
+              ]),
+            ),
+          ),
+        ));
   }
 
-  DecorationImage _buildBackgroundImage() {
-    return DecorationImage(
-      fit: BoxFit.cover,
-      colorFilter:
-          ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
-      image: AssetImage('assets/background.jpg'),
-    );
-  }
-
-  Widget _buildEmailTextField() {
-    return TextFormField(
-      decoration: InputDecoration(
-          labelText: 'E-Mail', filled: true, fillColor: Colors.white),
-      keyboardType: TextInputType.emailAddress,
-      validator: (String value) {
-        if (value.isEmpty ||
-            !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                .hasMatch(value)) {
-          return 'Please enter a valid email';
-        }
-      },
-      onSaved: (String value) {
-        _formData['email'] = value;
-      },
-    );
-  }
-
-  Widget _buildPasswordTextField() {
-    return TextFormField(
-      decoration: InputDecoration(
-          labelText: 'Password', filled: true, fillColor: Colors.white),
-      obscureText: true,
-      controller: _passwordTextController,
-      validator: (String value) {
-        if (value.isEmpty || value.length < 5) {
-          return 'Password invalid';
-        }
-      },
-      onSaved: (String value) {
-        _formData['password'] = value;
-      },
-    );
-  }
-
-  Widget _buildPasswordConfirmTextField() {
-    return FadeTransition(
-      opacity: CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: TextFormField(
-          decoration: InputDecoration(
-              labelText: 'Confirm Password',
-              filled: true,
-              fillColor: Colors.white),
-          obscureText: true,
-          validator: (String value) {
-            if (_passwordTextController.text != value &&
-                _authMode == AuthMode.Signup) {
-              return 'Passwords do not match.';
-            }
-          },
-        ),
-      ),
+  RichText _textAccount() {
+    return RichText(
+      text: TextSpan(
+          text: "Don't have an account? ",
+          children: [
+            TextSpan(
+              style: TextStyle(color: Colors.deepOrange),
+              text: 'Create your account.',
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SignUpPage())),
+            )
+          ],
+          style: TextStyle(
+              color: Colors.black87, fontSize: 14, fontFamily: 'Exo2')),
     );
   }
 
-  Widget _buildAcceptSwitch() {
-    return SwitchListTile(
-      value: _formData['acceptTerms'],
-      onChanged: (bool value) {
-        setState(() {
-          _formData['acceptTerms'] = value;
-        });
-      },
-      title: Text('Accept Terms'),
-    );
+  GradientText _loginGradientText() {
+    return GradientText('SPRUCE SUPPORT',
+        gradient: LinearGradient(colors: [
+          Color.fromRGBO(97, 6, 165, 1.0),
+          Color.fromRGBO(45, 160, 240, 1.0)
+        ]),
+        style: TextStyle(
+            fontFamily: 'Exo2', fontSize: 36, fontWeight: FontWeight.bold));
   }
 
+  BoxField _emailWidget() {
+    return BoxField(
+        controller: _emailController,
+        focusNode: _emailFocusNode,
+        hintText: "Enter email",
+        lableText: "Email",
+        obscureText: false,
+        onSaved: (String value) {
+          _formData['email'] = value;
+        },
+        onFieldSubmitted: (String value) {
+          FocusScope.of(context).requestFocus(_passFocusNode);
+        },
+        icon: Icons.email,
+        iconColor: colorCurve);
+  }
+
+  BoxField _passwordWidget() {
+    return BoxField(
+        controller: _passwordController,
+        focusNode: _passFocusNode,
+        hintText: "Enter Password",
+        lableText: "Password",
+        obscureText: true,
+        icon: Icons.lock_outline,
+        onSaved: (String value) {
+          _formData['password'] = value;
+        },
+        iconColor: colorCurve);
+  }
+
+  /////
   void _submitForm(Function authenticate) async {
-    if (!_formKey.currentState.validate() || !_formData['acceptTerms']) {
-      return;
-    }
+    // if (!_formKey.currentState.validate() || !_formData['acceptTerms']) {
+    //   return;
+    // }
     _formKey.currentState.save();
     Map<String, dynamic> successInformation;
-    successInformation = await authenticate(
-        _formData['email'], _formData['password'], _authMode);
+    successInformation =
+        await authenticate(_formData['email'], _formData['password']);
     if (successInformation['success']) {
       Navigator.pushReplacementNamed(context, '/');
     } else {
@@ -145,82 +170,82 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final double deviceWidth = MediaQuery.of(context).size.width;
-    final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: _buildBackgroundImage(),
-        ),
-        padding: EdgeInsets.all(10.0),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Container(
-              width: targetWidth,
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    _buildEmailTextField(),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    _buildPasswordTextField(),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    _buildPasswordConfirmTextField(),
-                    _buildAcceptSwitch(),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    FlatButton(
-                      child: Text(
-                          'Switch to ${_authMode == AuthMode.Login ? 'Signup' : 'Login'}'),
-                      onPressed: () {
-                        if (_authMode == AuthMode.Login) {
-                          setState(() {
-                            _authMode = AuthMode.Signup;
-                          });
-                          _controller.forward();
-                        } else {
-                          setState(() {
-                            _authMode = AuthMode.Login;
-                          });
-                          _controller.reverse();
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    ScopedModelDescendant<MainModel>(
-                      builder: (BuildContext context, Widget child,
-                          MainModel model) {
-                        return model.isLoading
-                            ? CircularProgressIndicator()
-                            : RaisedButton(
-                                textColor: Colors.white,
-                                child: Text(_authMode == AuthMode.Login
-                                    ? 'LOGIN'
-                                    : 'SIGNUP'),
-                                onPressed: () =>
-                                    _submitForm(model.authenticate),
-                              );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
+  ///
+
+  GestureDetector socialCircleAvatar(String assetIcon, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: CircleAvatar(
+        maxRadius: size.getWidthPx(24),
+        backgroundColor: Colors.transparent,
+        child: Image.asset(assetIcon),
       ),
     );
   }
+
+  loginFields() => Container(
+        child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                _emailWidget(),
+                SizedBox(height: size.getWidthPx(8)),
+                _passwordWidget(),
+                GestureDetector(
+                    onTap: () {
+                      //Navigate to Forgot Password Screen...
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageForgotPassword()));
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(right: size.getWidthPx(24)),
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text("Forgot Password?",
+                              style: TextStyle(
+                                  fontFamily: 'Exo2', fontSize: 16.0))),
+                    )),
+                SizedBox(height: size.getWidthPx(8)),
+                // _loginButtonWidget(),
+
+                ScopedModelDescendant<MainModel>(
+                  builder:
+                      (BuildContext context, Widget child, MainModel model) {
+                    return model.isLoading
+                        ? CircularProgressIndicator()
+                        : Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: size.getWidthPx(20),
+                                horizontal: size.getWidthPx(16)),
+                            width: size.getWidthPx(200),
+                            child: RaisedButton(
+                              elevation: 8.0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      new BorderRadius.circular(30.0)),
+                              padding: EdgeInsets.all(size.getWidthPx(12)),
+                              child: Text(
+                                "LOGIN",
+                                style: TextStyle(
+                                    fontFamily: 'Exo2',
+                                    color: Colors.white,
+                                    fontSize: 20.0),
+                              ),
+                              color: colorCurve,
+                              onPressed: () => _submitForm(model.authenticate),
+                            ),
+                          );
+                  },
+                ),
+
+                SizedBox(height: size.getWidthPx(28)),
+
+                // _socialButtons()
+              ],
+            )),
+      );
 }

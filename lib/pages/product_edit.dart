@@ -19,6 +19,16 @@ class ProductEditPage extends StatefulWidget {
 }
 
 class _ProductEditPageState extends State<ProductEditPage> {
+  PageController _pageController;
+  int _page = 0;
+
+  @override
+  initState() {
+    _pageController = PageController();
+    // widget.model.fetchProducts();
+    super.initState();
+  }
+
   final Map<String, dynamic> _formData = {
     'title': null,
     'description': null,
@@ -95,10 +105,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
   }
 
   Widget _buildPriceTextField(Product product) {
-     if (product == null && _priceTextController.text.trim() == '') {
+    if (product == null && _priceTextController.text.trim() == '') {
       _priceTextController.text = '';
-    } else if (product != null &&
-        _priceTextController.text.trim() == '') {
+    } else if (product != null && _priceTextController.text.trim() == '') {
       _priceTextController.text = product.price.toString();
     }
     return EnsureVisibleWhenFocused(
@@ -199,14 +208,15 @@ class _ProductEditPageState extends State<ProductEditPage> {
     _formKey.currentState.save();
     if (selectedProductIndex == -1) {
       addProduct(
-          _titleTextController.text,
-          _descriptionTextController.text,
-          _formData['image'],
-         double.parse(_priceTextController.text.replaceFirst(RegExp(r','), '.')),
-          _formData['location']).then((bool success) {
+              _titleTextController.text,
+              _descriptionTextController.text,
+              _formData['image'],
+              double.parse(
+                  _priceTextController.text.replaceFirst(RegExp(r','), '.')),
+              _formData['location'])
+          .then((bool success) {
         if (success) {
-          Navigator
-              .pushReplacementNamed(context, '/products')
+          Navigator.pushReplacementNamed(context, '/products')
               .then((_) => setSelectedProduct(null));
         } else {
           showDialog(
@@ -232,8 +242,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['image'],
         double.parse(_priceTextController.text.replaceFirst(RegExp(r','), '.')),
         _formData['location'],
-      ).then((_) => Navigator
-          .pushReplacementNamed(context, '/products')
+      ).then((_) => Navigator.pushReplacementNamed(context, '/products')
           .then((_) => setSelectedProduct(null)));
     }
   }
@@ -251,8 +260,100 @@ class _ProductEditPageState extends State<ProductEditPage> {
                   title: Text('Edit Product'),
                 ),
                 body: pageContent,
+
+                //bottom nav
+                bottomNavigationBar: BottomAppBar(
+                  child: new Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      SizedBox(width: 7),
+                      IconButton(
+                        icon: Icon(
+                          Icons.home,
+                          size: 24.0,
+                        ),
+                        color: _page == 0
+                            ? Theme.of(context).accentColor
+                            : Theme.of(context).textTheme.caption.color,
+                        onPressed: () =>
+                            Navigator.pushReplacementNamed(context, '/'),
+                      ),
+                      // IconButton(
+                      //   icon: Icon(
+                      //     Icons.label,
+                      //     size: 24.0,
+                      //   ),
+                      //   color: _page == 1
+                      //       ? Theme.of(context).accentColor
+                      //       : Theme.of(context).textTheme.caption.color,
+                      //   onPressed: () => _pageController.jumpToPage(1),
+                      // ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.add,
+                          size: 24.0,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        color: _page == 2
+                            ? Theme.of(context).accentColor
+                            : Theme.of(context).textTheme.caption.color,
+                        onPressed: () => _pageController.jumpToPage(0),
+                      ),
+                      // IconButton(
+                      //   icon: Icon(
+                      //     Icons.notifications,
+                      //     size: 24.0,
+                      //   ),
+                      //   color: _page == 3
+                      //       ? Theme.of(context).accentColor
+                      //       : Theme.of(context).textTheme.caption.color,
+                      //   onPressed: () => _pageController.jumpToPage(3),
+                      // ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.person,
+                          size: 24.0,
+                        ),
+                        color: _page == 4
+                            ? Theme.of(context).accentColor
+                            : Theme.of(context).textTheme.caption.color,
+                        onPressed: () => _pageController.jumpToPage(4),
+                      ),
+                      SizedBox(width: 7),
+                    ],
+                  ),
+                  color: Theme.of(context).primaryColor,
+                  shape: CircularNotchedRectangle(),
+                ),
+
+                // floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+                // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+                // floatingActionButton: FloatingActionButton(
+                //   elevation: 10.0,
+                //   child: Icon(
+                //     Icons.add,
+                //   ),
+                //   onPressed: () => Navigator.pushReplacementNamed(context, '/admin'),
+                // ),
               );
       },
     );
+  }
+
+  void navigationTapped(int page) {
+    _pageController.jumpToPage(page);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageController.dispose();
+  }
+
+  void onPageChanged(int page) {
+    setState(() {
+      this._page = page;
+    });
   }
 }

@@ -32,6 +32,10 @@ dependencies:
   image_picker: ^0.6.1+10
   mime: ^0.9.6+3
   url_launcher: ^5.2.5
+  flutter_staggered_grid_view:
+  connectivity:
+
+ 
 
 dev_dependencies:
   flutter_test:
@@ -76,7 +80,14 @@ flutter:
         fonts:
           - asset: assets/Oswald-Bold.ttf
             weight: 700
-  
+      - family: Exo2SemiBold
+        fonts:
+          - asset: fonts/Exo2-SemiBold.ttf
+            weight: 800
+      - family: Exo2
+        fonts:
+          - asset: fonts/Exo2-Regular.ttf
+            weight: 800
   # fonts:
   #   - family: Schyler
   #     fonts:

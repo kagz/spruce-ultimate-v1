@@ -7,6 +7,8 @@ import 'package:spruce/widgets/helpers/upper_curve.dart';
 import '../widgets/products/products.dart';
 import '../widgets/ui_elements/logout_list_tile.dart';
 import '../scoped-models/main.dart';
+import 'product.dart';
+import 'product_edit.dart';
 
 Screen size;
 
@@ -105,7 +107,23 @@ class _ProductsPageState extends State<ProductsPage> {
           )
         ],
       ),
-      body: _buildProductsList(),
+      // body: _buildProductsList(),
+
+      body: PageView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: _pageController,
+        onPageChanged: onPageChanged,
+        children: <Widget>[
+          _buildProductsList(),
+          ProductEditPage(),
+
+          // Home(),
+          // Home(),
+          // Home(),
+          // Home(),
+        ],
+      ),
+
       // Set the bottom navigation bar
       bottomNavigationBar: BottomAppBar(
         child: new Row(
@@ -121,18 +139,18 @@ class _ProductsPageState extends State<ProductsPage> {
               color: _page == 0
                   ? Theme.of(context).accentColor
                   : Theme.of(context).textTheme.caption.color,
-              onPressed: () => _pageController.jumpToPage(0),
+              onPressed: () => Navigator.pushReplacementNamed(context, '/'),
             ),
-            IconButton(
-              icon: Icon(
-                Icons.label,
-                size: 24.0,
-              ),
-              color: _page == 1
-                  ? Theme.of(context).accentColor
-                  : Theme.of(context).textTheme.caption.color,
-              onPressed: () => _pageController.jumpToPage(1),
-            ),
+            // IconButton(
+            //   icon: Icon(
+            //     Icons.label,
+            //     size: 24.0,
+            //   ),
+            //   color: _page == 1
+            //       ? Theme.of(context).accentColor
+            //       : Theme.of(context).textTheme.caption.color,
+            //   onPressed: () => _pageController.jumpToPage(1),
+            // ),
             IconButton(
               icon: Icon(
                 Icons.add,
@@ -142,18 +160,18 @@ class _ProductsPageState extends State<ProductsPage> {
               color: _page == 2
                   ? Theme.of(context).accentColor
                   : Theme.of(context).textTheme.caption.color,
-              onPressed: () => _pageController.jumpToPage(2),
+              onPressed: () => _pageController.jumpToPage(0),
             ),
-            IconButton(
-              icon: Icon(
-                Icons.notifications,
-                size: 24.0,
-              ),
-              color: _page == 3
-                  ? Theme.of(context).accentColor
-                  : Theme.of(context).textTheme.caption.color,
-              onPressed: () => _pageController.jumpToPage(3),
-            ),
+            // IconButton(
+            //   icon: Icon(
+            //     Icons.notifications,
+            //     size: 24.0,
+            //   ),
+            //   color: _page == 3
+            //       ? Theme.of(context).accentColor
+            //       : Theme.of(context).textTheme.caption.color,
+            //   onPressed: () => _pageController.jumpToPage(3),
+            // ),
             IconButton(
               icon: Icon(
                 Icons.person,
@@ -178,7 +196,7 @@ class _ProductsPageState extends State<ProductsPage> {
         child: Icon(
           Icons.add,
         ),
-        onPressed: () => _pageController.jumpToPage(2),
+        onPressed: () => _pageController.jumpToPage(1),
       ),
     );
   }
