@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
+import 'package:spruce/widgets/helpers/colors.dart';
 import 'package:spruce/widgets/helpers/screensize.dart';
 import 'package:spruce/widgets/helpers/upper_curve.dart';
 
