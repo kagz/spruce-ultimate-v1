@@ -22,6 +22,7 @@ class _AuthPageState extends State<AuthPage> {
   };
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
+
   FocusNode _emailFocusNode = new FocusNode();
   FocusNode _passFocusNode = new FocusNode();
   String _email, _password;

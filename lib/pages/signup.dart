@@ -1,5 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:spruce/models/auth.dart';
+import 'package:spruce/scoped-models/main.dart';
 import 'package:spruce/widgets/helpers/boxfield.dart';
 import 'package:spruce/widgets/helpers/colors.dart';
 import 'package:spruce/widgets/helpers/screensize.dart';
@@ -16,15 +19,14 @@ class _SignUpPageState extends State<SignUpPage> {
     'acceptTerms': false
   };
 
-  TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
-  FocusNode _nameFocusNode = FocusNode();
+
   FocusNode _emailFocusNode = FocusNode();
   FocusNode _passFocusNode = FocusNode();
+  AuthMode _authMode = AuthMode.Signup;
   FocusNode _confirmPassFocusNode = FocusNode();
-  String _name, _email, _password, _confirmPassword;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Screen size;
@@ -111,8 +113,8 @@ class _SignUpPageState extends State<SignUpPage> {
         hintText: "Enter email",
         lableText: "Email",
         obscureText: false,
-        onSaved: (String val) {
-          _email = val;
+        onSaved: (String value) {
+          _formData['email'] = value;
         },
         onFieldSubmitted: (String value) {
           FocusScope.of(context).requestFocus(_passFocusNode);
@@ -129,47 +131,28 @@ class _SignUpPageState extends State<SignUpPage> {
         lableText: "Password",
         obscureText: true,
         icon: Icons.lock_outline,
-        onSaved: (String val) {
-          _password = val;
+        onSaved: (String value) {
+          _formData['password'] = value;
         },
         iconColor: colorCurve);
   }
 
   BoxField _confirmPasswordWidget() {
     return BoxField(
-        controller: _confirmPasswordController,
+
+        ///controller: _confirmPasswordController,
         focusNode: _confirmPassFocusNode,
         hintText: "Enter Confirm Password",
         lableText: "Confirm Password",
         obscureText: true,
         icon: Icons.lock_outline,
-        onSaved: (String val) {
-          _confirmPassword = val;
+        validator: (String value) {
+          if (_passwordController.text != value &&
+              _authMode == AuthMode.Signup) {
+            return 'Passwords do not match.';
+          }
         },
         iconColor: colorCurve);
-  }
-
-  Container _signUpButtonWidget() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-          vertical: size.getWidthPx(20), horizontal: size.getWidthPx(16)),
-      width: size.getWidthPx(200),
-      child: RaisedButton(
-        elevation: 8.0,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        padding: EdgeInsets.all(size.getWidthPx(12)),
-        child: Text(
-          "Sign Up",
-          style: TextStyle(
-              fontFamily: 'Exo2', color: Colors.white, fontSize: 20.0),
-        ),
-        color: colorCurve,
-        onPressed: () {
-          // Going to DashBoard
-        },
-      ),
-    );
   }
 
   GestureDetector socialCircleAvatar(String assetIcon, VoidCallback onTap) {
@@ -183,6 +166,39 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  ///
+  void _submitForm(Function authenticate) async {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    _formKey.currentState.save();
+    Map<String, dynamic> successInformation;
+    successInformation = await authenticate(
+        _formData['email'], _formData['password'], _authMode);
+    if (successInformation['success']) {
+      Navigator.pushReplacementNamed(context, '/');
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('An Error Occurred!'),
+            content: Text(successInformation['message']),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Okay'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  ///
   registerFields() => Container(
         child: Form(
             key: _formKey,
@@ -194,7 +210,36 @@ class _SignUpPageState extends State<SignUpPage> {
                 _emailWidget(),
                 _passwordWidget(),
                 _confirmPasswordWidget(),
-                _signUpButtonWidget(),
+
+                ScopedModelDescendant<MainModel>(
+                  builder:
+                      (BuildContext context, Widget child, MainModel model) {
+                    return model.isLoading
+                        ? CircularProgressIndicator()
+                        : Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: size.getWidthPx(20),
+                                horizontal: size.getWidthPx(16)),
+                            width: size.getWidthPx(200),
+                            child: RaisedButton(
+                              elevation: 8.0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      new BorderRadius.circular(30.0)),
+                              padding: EdgeInsets.all(size.getWidthPx(12)),
+                              child: Text(
+                                "SIGNUP",
+                                style: TextStyle(
+                                    fontFamily: 'Exo2',
+                                    color: Colors.white,
+                                    fontSize: 20.0),
+                              ),
+                              color: colorCurve,
+                              onPressed: () => _submitForm(model.authenticate),
+                            ),
+                          );
+                  },
+                ),
               ],
             )),
       );
