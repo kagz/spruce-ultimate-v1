@@ -46,13 +46,13 @@ class _ImageInputState extends State<ImageInput> {
               SizedBox(
                 height: 10.0,
               ),
-              FlatButton(
-                textColor: Theme.of(context).primaryColor,
-                child: Text('Use Camera'),
-                onPressed: () {
-                  _getImage(context, ImageSource.camera);
-                },
-              ),
+              // FlatButton(
+              //   textColor: Theme.of(context).primaryColor,
+              //   child: Text('Use Camera'),
+              //   onPressed: () {
+              //     _getImage(context, ImageSource.camera);
+              //   },
+              // ),
               FlatButton(
                 textColor: Theme.of(context).primaryColor,
                 child: Text('Use Gallery'),

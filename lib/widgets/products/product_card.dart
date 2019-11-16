@@ -16,16 +16,21 @@ class ProductCard extends StatelessWidget {
 
   Widget _buildTitlePriceRow() {
     return Container(
-      padding: EdgeInsets.only(top: 10.0),
+      padding: EdgeInsets.all(10.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Flexible(
-            child: TitleDefault(product.title),
+            child: TitleDefault(product.title.toUpperCase()),
           ),
           Flexible(
             child: SizedBox(
-              width: 8.0,
+              width: 12.0,
+            ),
+          ),
+          Flexible(
+            child: SizedBox(
+              width: 12.0,
             ),
           ),
           Flexible(
@@ -52,16 +57,6 @@ class ProductCard extends StatelessWidget {
                       .then((_) => model.selectProduct(null));
                 },
               ),
-              IconButton(
-                icon: Icon(product.isFavorite
-                    ? Icons.favorite
-                    : Icons.favorite_border),
-                color: Colors.red,
-                onPressed: () {
-                  model.selectProduct(product.id);
-                  model.toggleProductFavoriteStatus();
-                },
-              ),
             ]);
       },
     );
@@ -78,7 +73,7 @@ class ProductCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       borderOnForeground: true,
       child: Container(
-        height: size.getWidthPx(360),
+        height: size.getWidthPx(350),
         width: size.getWidthPx(330),
         child: Column(
           children: <Widget>[
@@ -90,7 +85,7 @@ class ProductCard extends StatelessWidget {
               child: FadeInImage(
                 image: NetworkImage(product.image),
                 height: 220,
-                width: 370,
+                width: 389,
                 fit: BoxFit.cover,
                 placeholder: AssetImage('assets/food.jpg'),
               ),

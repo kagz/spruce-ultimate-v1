@@ -84,10 +84,15 @@ flutter:
         fonts:
           - asset: fonts/Exo2-SemiBold.ttf
             weight: 800
+            
       - family: Exo2
         fonts:
           - asset: fonts/Exo2-Regular.ttf
             weight: 800
+
+      - family: nicefont
+        fonts:
+          - asset: fonts/Pacifico-Regular.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

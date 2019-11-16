@@ -42,14 +42,7 @@ class _ProductsPageState extends State<ProductsPage> {
         children: <Widget>[
           AppBar(
             automaticallyImplyLeading: false,
-            title: Text('Choose'),
-          ),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text('Manage Products'),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/admin');
-            },
+            title: Text('Spruce Support'),
           ),
           Divider(),
           LogoutListTile()
@@ -117,11 +110,6 @@ class _ProductsPageState extends State<ProductsPage> {
         children: <Widget>[
           _buildProductsList(),
           ProductEditPage(),
-
-          // Home(),
-          // Home(),
-          // Home(),
-          // Home(),
         ],
       ),
 
@@ -142,16 +130,6 @@ class _ProductsPageState extends State<ProductsPage> {
                   : Theme.of(context).textTheme.caption.color,
               onPressed: () => Navigator.pushReplacementNamed(context, '/'),
             ),
-            // IconButton(
-            //   icon: Icon(
-            //     Icons.label,
-            //     size: 24.0,
-            //   ),
-            //   color: _page == 1
-            //       ? Theme.of(context).accentColor
-            //       : Theme.of(context).textTheme.caption.color,
-            //   onPressed: () => _pageController.jumpToPage(1),
-            // ),
             IconButton(
               icon: Icon(
                 Icons.add,
@@ -163,25 +141,17 @@ class _ProductsPageState extends State<ProductsPage> {
                   : Theme.of(context).textTheme.caption.color,
               onPressed: () => _pageController.jumpToPage(0),
             ),
-            // IconButton(
-            //   icon: Icon(
-            //     Icons.notifications,
-            //     size: 24.0,
-            //   ),
-            //   color: _page == 3
-            //       ? Theme.of(context).accentColor
-            //       : Theme.of(context).textTheme.caption.color,
-            //   onPressed: () => _pageController.jumpToPage(3),
-            // ),
             IconButton(
               icon: Icon(
-                Icons.person,
+                Icons.list,
                 size: 24.0,
               ),
               color: _page == 4
                   ? Theme.of(context).accentColor
                   : Theme.of(context).textTheme.caption.color,
-              onPressed: () => _pageController.jumpToPage(4),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/admin');
+              },
             ),
             SizedBox(width: 7),
           ],

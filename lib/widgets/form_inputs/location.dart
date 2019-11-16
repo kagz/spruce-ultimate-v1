@@ -83,7 +83,7 @@ class _LocationInputState extends State<LocationInput> {
       ],
           center: Location(_locationData.latitude, _locationData.longitude),
           width: 500,
-          height: 300,
+          height: 150,
           maptype: StaticMapViewType.roadmap);
       widget.setLocation(_locationData);
 
@@ -163,10 +163,10 @@ class _LocationInputState extends State<LocationInput> {
           ),
         ),
         SizedBox(height: 10.0),
-        FlatButton(
-          child: Text('Locate User'),
-          onPressed: _getUserLocation,
-        ),
+        // FlatButton(
+        //   child: Text('Locate User'),
+        //   onPressed: _getUserLocation,
+        // ),
         SizedBox(
           height: 10.0,
         ),

@@ -16,11 +16,11 @@ class ProductsAdminPage extends StatelessWidget {
         children: <Widget>[
           AppBar(
             automaticallyImplyLeading: false,
-            title: Text('Choose'),
+            title: Text('Spruce Support'),
           ),
           ListTile(
-            leading: Icon(Icons.shop),
-            title: Text('All Products'),
+            leading: Icon(Icons.home),
+            title: Text('All Jobs'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/');
             },
@@ -35,26 +35,22 @@ class ProductsAdminPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 1,
       child: Scaffold(
         drawer: _buildSideDrawer(context),
         appBar: AppBar(
-          title: Text('Manage Products'),
+          title: Text('Manage Jobs'),
           bottom: TabBar(
             tabs: <Widget>[
               Tab(
-                icon: Icon(Icons.create),
-                text: 'Create Product',
-              ),
-              Tab(
                 icon: Icon(Icons.list),
-                text: 'My Products',
+                text: 'Posted Jobs',
               ),
             ],
           ),
         ),
         body: TabBarView(
-          children: <Widget>[ProductEditPage(), ProductListPage(model)],
+          children: <Widget>[ProductListPage(model)],
         ),
       ),
     );
