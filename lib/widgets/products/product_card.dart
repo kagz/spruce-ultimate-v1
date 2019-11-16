@@ -78,8 +78,8 @@ class ProductCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       borderOnForeground: true,
       child: Container(
-        height: size.getWidthPx(300),
-        width: size.getWidthPx(350),
+        height: size.getWidthPx(360),
+        width: size.getWidthPx(330),
         child: Column(
           children: <Widget>[
             ClipRRect(
@@ -89,7 +89,7 @@ class ProductCard extends StatelessWidget {
                   topRight: Radius.circular(12.0)),
               child: FadeInImage(
                 image: NetworkImage(product.image),
-                height: 100,
+                height: 220,
                 width: 370,
                 fit: BoxFit.cover,
                 placeholder: AssetImage('assets/food.jpg'),

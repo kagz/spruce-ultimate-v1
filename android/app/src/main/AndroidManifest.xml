@@ -14,7 +14,7 @@
         android:label="spruce"
         android:icon="@mipmap/ic_launcher">
             <activity android:name="com.apptreesoftware.mapview.MapActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
-<meta-data android:name="com.google.android.geo.AIzaSyDWvg27aD4Nev_IyRTOdW8cGXleYGA17I0"
+<meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyDWvg27aD4Nev_IyRTOdW8cGXleYGA17I0"/>
         <activity
             android:name=".MainActivity"
