@@ -7,51 +7,56 @@ import 'package:scoped_model/scoped_model.dart';
 import '../widgets/helpers/ensure_visible.dart';
 import '../widgets/form_inputs/location.dart';
 import '../widgets/form_inputs/image.dart';
-import '../models/product.dart';
+import '../models/job.dart';
 import '../scoped-models/main.dart';
 import '../models/location_data.dart';
 
-class ProductEditPage extends StatefulWidget {
+class JobEditPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _ProductEditPageState();
+    return _JobEditPageState();
   }
 }
 
-class _ProductEditPageState extends State<ProductEditPage> {
+class _JobEditPageState extends State<JobEditPage> {
   PageController _pageController;
   int _page = 0;
 
   @override
   initState() {
     _pageController = PageController();
-    // widget.model.fetchProducts();
+    // widget.model.fetchJobs();
     super.initState();
   }
 
   final Map<String, dynamic> _formData = {
     'title': null,
     'description': null,
-    'price': null,
+    'staffs': null,
     'image': null,
+     'clientname': null,
     'location': null
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _titleFocusNode = FocusNode();
+   final _dateFocusNode = FocusNode();
+   final _clientnameFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
-  final _priceFocusNode = FocusNode();
+  final _staffsFocusNode = FocusNode();
   final _titleTextController = TextEditingController();
+   final _dateTextController = TextEditingController();
+  final _clientnameTextController = TextEditingController();
   final _descriptionTextController = TextEditingController();
-  final _priceTextController = TextEditingController();
+  final _staffsTextController = TextEditingController();
 
-  Widget _buildTitleTextField(Product product) {
-    if (product == null && _titleTextController.text.trim() == '') {
+  Widget _buildTitleTextField(Job job) {
+    if (job == null && _titleTextController.text.trim() == '') {
       _titleTextController.text = '';
-    } else if (product != null && _titleTextController.text.trim() == '') {
-      _titleTextController.text = product.title;
-    } else if (product != null && _titleTextController.text.trim() != '') {
+    } else if (job != null && _titleTextController.text.trim() == '') {
+      _titleTextController.text = job.title;
+    } else if (job != null && _titleTextController.text.trim() != '') {
       _titleTextController.text = _titleTextController.text;
-    } else if (product == null && _titleTextController.text.trim() != '') {
+    } else if (job == null && _titleTextController.text.trim() != '') {
       _titleTextController.text = _titleTextController.text;
     } else {
       _titleTextController.text = '';
@@ -60,9 +65,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
       focusNode: _titleFocusNode,
       child: TextFormField(
         focusNode: _titleFocusNode,
-        decoration: InputDecoration(labelText: 'Product Title'),
+        decoration: InputDecoration(labelText: 'Job Title'),
         controller: _titleTextController,
-        // initialValue: product == null ? '' : product.title,
+        // initialValue: job == null ? '' : job.title,
         validator: (String value) {
           // if (value.trim().length <= 0) {
           if (value.isEmpty || value.length < 5) {
@@ -76,20 +81,20 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
-  Widget _buildDescriptionTextField(Product product) {
-    if (product == null && _descriptionTextController.text.trim() == '') {
+  Widget _buildDescriptionTextField(Job job) {
+    if (job == null && _descriptionTextController.text.trim() == '') {
       _descriptionTextController.text = '';
-    } else if (product != null &&
+    } else if (job != null &&
         _descriptionTextController.text.trim() == '') {
-      _descriptionTextController.text = product.description;
+      _descriptionTextController.text = job.description;
     }
     return EnsureVisibleWhenFocused(
       focusNode: _descriptionFocusNode,
       child: TextFormField(
         focusNode: _descriptionFocusNode,
         maxLines: 4,
-        decoration: InputDecoration(labelText: 'Product Description'),
-        // initialValue: product == null ? '' : product.description,
+        decoration: InputDecoration(labelText: 'Job Description'),
+        // initialValue: job == null ? '' : job.description,
         controller: _descriptionTextController,
         validator: (String value) {
           // if (value.trim().length <= 0) {
@@ -104,29 +109,95 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
-  Widget _buildPriceTextField(Product product) {
-    if (product == null && _priceTextController.text.trim() == '') {
-      _priceTextController.text = '';
-    } else if (product != null && _priceTextController.text.trim() == '') {
-      _priceTextController.text = product.price.toString();
+
+  Widget _buildStaffsTextField(Job job) {
+    if (job == null && _staffsTextController.text.trim() == '') {
+      _staffsTextController.text = '';
+    } else if (job != null && _staffsTextController.text.trim() == '') {
+      _staffsTextController.text = job.staffs.toString();
     }
     return EnsureVisibleWhenFocused(
-      focusNode: _priceFocusNode,
+      focusNode: _staffsFocusNode,
       child: TextFormField(
-        focusNode: _priceFocusNode,
+        focusNode: _staffsFocusNode,
         keyboardType: TextInputType.number,
-        decoration: InputDecoration(labelText: 'Product Price'),
-        controller: _priceTextController,
-        // initialValue: product == null ? '' : product.price.toString(),
+        decoration: InputDecoration(labelText: 'Job Staffs'),
+        controller: _staffsTextController,
+        // initialValue: job == null ? '' : job.staffs.toString(),
         validator: (String value) {
           // if (value.trim().length <= 0) {
           if (value.isEmpty ||
               !RegExp(r'^(?:[1-9]\d*|0)?(?:[.,]\d+)?$').hasMatch(value)) {
-            return 'Price is required and should be a number.';
+            return 'Staffs is required and should be a number.';
           }
         },
       ),
     );
+  }
+  
+  Widget _buildClientNameTextField(Job job) {
+
+    if (job == null && _clientnameTextController.text.trim() == '') {
+      _clientnameTextController.text = '';
+    } else if (job != null &&
+        _clientnameTextController.text.trim() == '') {
+      _clientnameTextController.text = job.clientname;
+    }
+    return EnsureVisibleWhenFocused(
+      focusNode: _clientnameFocusNode,
+      child: TextFormField(
+        focusNode: _clientnameFocusNode,
+        decoration: InputDecoration(labelText: 'Job Clientname'),
+        // initialValue: job == null ? '' : job.description,
+        controller: _clientnameTextController,
+        validator: (String value) {
+          // if (value.trim().length <= 0) {
+          if (value.isEmpty ) {
+            return 'clientname is required and should be 10+ characters long.';
+          }
+        },
+        onSaved: (String value) {
+          _formData['clientname'] = value;
+        },
+      ),
+    );
+
+
+
+
+  }
+
+
+  Widget _buildDateTextField(Job job) {
+
+    if (job == null && _dateTextController.text.trim() == '') {
+      _dateTextController.text = '';
+    } else if (job != null &&
+        _clientnameTextController.text.trim() == '') {
+      _clientnameTextController.text = job.date;
+    }
+    return EnsureVisibleWhenFocused(
+      focusNode: _clientnameFocusNode,
+      child: TextFormField(
+        focusNode: _dateFocusNode,
+        decoration: InputDecoration(labelText: 'Job date'),
+        // initialValue: job == null ? '' : job.description,
+        controller: _dateTextController,
+        validator: (String value) {
+          // if (value.trim().length <= 0) {
+          if (value.isEmpty ) {
+            return 'date is required and should be 10+ characters long.';
+          }
+        },
+        onSaved: (String value) {
+          _formData['date'] = value;
+        },
+      ),
+    );
+
+
+
+
   }
 
   Widget _buildSubmitButton() {
@@ -138,16 +209,16 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 child: Text('Save'),
                 textColor: Colors.white,
                 onPressed: () => _submitForm(
-                    model.addProduct,
-                    model.updateProduct,
-                    model.selectProduct,
-                    model.selectedProductIndex),
+                    model.addJob,
+                    model.updateJob,
+                    model.selectJob,
+                    model.selectedJobIndex),
               );
       },
     );
   }
 
-  Widget _buildPageContent(BuildContext context, Product product) {
+  Widget _buildPageContent(BuildContext context, Job job) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
     final double targetPadding = deviceWidth - targetWidth;
@@ -162,15 +233,17 @@ class _ProductEditPageState extends State<ProductEditPage> {
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
             children: <Widget>[
-              _buildTitleTextField(product),
-              _buildDescriptionTextField(product),
-              _buildPriceTextField(product),
+              _buildTitleTextField(job),
+              _buildDescriptionTextField(job),
+              _buildStaffsTextField(job),
+               _buildDateTextField(job),
+               _buildClientNameTextField(job),
               SizedBox(
                 height: 10.0,
               ),
-              LocationInput(_setLocation, product),
+              LocationInput(_setLocation, job),
               SizedBox(height: 10.0),
-              ImageInput(_setImage, product),
+              ImageInput(_setImage, job),
               SizedBox(
                 height: 10.0,
               ),
@@ -191,25 +264,27 @@ class _ProductEditPageState extends State<ProductEditPage> {
   }
 
   void _submitForm(
-      Function addProduct, Function updateProduct, Function setSelectedProduct,
-      [int selectedProductIndex]) {
+      Function addJob, Function updateJob, Function setSelectedJob,
+      [int selectedJobIndex]) {
     if (!_formKey.currentState.validate() ||
-        (_formData['image'] == null && selectedProductIndex == -1)) {
+        (_formData['image'] == null && selectedJobIndex == -1)) {
       return;
     }
     _formKey.currentState.save();
-    if (selectedProductIndex == -1) {
-      addProduct(
+    if (selectedJobIndex == -1) {
+      addJob(
+         _dateTextController.text,
+         _clientnameTextController.text,
               _titleTextController.text,
               _descriptionTextController.text,
               _formData['image'],
-              double.parse(
-                  _priceTextController.text.replaceFirst(RegExp(r','), '.')),
+              int.parse(
+                  _staffsTextController.text.replaceFirst(RegExp(r','), '.')),
               _formData['location'])
           .then((bool success) {
         if (success) {
-          Navigator.pushReplacementNamed(context, '/products')
-              .then((_) => setSelectedProduct(null));
+          Navigator.pushReplacementNamed(context, '/jobs')
+              .then((_) => setSelectedJob(null));
         } else {
           showDialog(
               context: context,
@@ -228,14 +303,16 @@ class _ProductEditPageState extends State<ProductEditPage> {
         }
       });
     } else {
-      updateProduct(
+      updateJob(
+         _dateTextController.text,
+          _clientnameTextController.text,
         _titleTextController.text,
         _descriptionTextController.text,
         _formData['image'],
-        double.parse(_priceTextController.text.replaceFirst(RegExp(r','), '.')),
+        int.parse(_staffsTextController.text.replaceFirst(RegExp(r','), '.')),
         _formData['location'],
-      ).then((_) => Navigator.pushReplacementNamed(context, '/products')
-          .then((_) => setSelectedProduct(null)));
+      ).then((_) => Navigator.pushReplacementNamed(context, '/jobs')
+          .then((_) => setSelectedJob(null)));
     }
   }
 
@@ -244,8 +321,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         final Widget pageContent =
-            _buildPageContent(context, model.selectedProduct);
-        return model.selectedProductIndex == -1
+            _buildPageContent(context, model.selectedJob);
+        return model.selectedJobIndex == -1
             ? pageContent
             : Scaffold(
                 appBar: AppBar(

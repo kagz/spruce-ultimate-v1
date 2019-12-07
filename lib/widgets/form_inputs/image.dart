@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
 
-import '../../models/product.dart';
+import '../../models/job.dart';
 
 class ImageInput extends StatefulWidget {
   final Function setImage;
-  final Product product;
+  final Job job;
 
-  ImageInput(this.setImage, this.product);
+  ImageInput(this.setImage, this.job);
 
   @override
   State<StatefulWidget> createState() {
@@ -77,9 +77,9 @@ class _ImageInputState extends State<ImageInput> {
         width: MediaQuery.of(context).size.width,
         alignment: Alignment.topCenter,
       );
-    } else if (widget.product != null) {
+    } else if (widget.job != null) {
       previewImage = Image.network(
-        widget.product.image,
+        widget.job.image,
         fit: BoxFit.cover,
         height: 300.0,
         width: MediaQuery.of(context).size.width,

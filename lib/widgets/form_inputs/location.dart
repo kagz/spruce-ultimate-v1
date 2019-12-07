@@ -8,14 +8,14 @@ import 'package:location/location.dart' as geoloc;
 
 import '../helpers/ensure_visible.dart';
 import '../../models/location_data.dart';
-import '../../models/product.dart';
+import '../../models/job.dart';
 import '../../shared/global_config.dart';
 
 class LocationInput extends StatefulWidget {
   final Function setLocation;
-  final Product product;
+  final Job job;
 
-  LocationInput(this.setLocation, this.product);
+  LocationInput(this.setLocation, this.job);
 
   @override
   State<StatefulWidget> createState() {
@@ -32,8 +32,8 @@ class _LocationInputState extends State<LocationInput> {
   @override
   void initState() {
     _addressInputFocusNode.addListener(_updateLocation);
-    if (widget.product != null) {
-      _getStaticMap(widget.product.location.address, geocode: false);
+    if (widget.job != null) {
+      _getStaticMap(widget.job.location.address, geocode: false);
     }
     super.initState();
   }
@@ -66,10 +66,12 @@ class _LocationInputState extends State<LocationInput> {
       final coords = decodedResponse['results'][0]['geometry']['location'];
       _locationData = LocationData(
           address: formattedAddress,
-          latitude: coords['lat'],
-          longitude: coords['lng']);
+          // latitude: coords['lat'],
+          // longitude: coords['lng']
+          
+          );
     } else if (lat == null && lng == null) {
-      _locationData = widget.product.location;
+      _locationData = widget.job.location;
     } else {
       _locationData =
           LocationData(address: address, latitude: lat, longitude: lng);
@@ -82,9 +84,10 @@ class _LocationInputState extends State<LocationInput> {
             _locationData.longitude)
       ],
           center: Location(_locationData.latitude, _locationData.longitude),
-          width: 500,
-          height: 150,
-          maptype: StaticMapViewType.roadmap);
+          width: 200,
+          height: 50,
+          maptype: StaticMapViewType.roadmap
+          );
       widget.setLocation(_locationData);
 
       setState(() {
@@ -115,8 +118,10 @@ class _LocationInputState extends State<LocationInput> {
           currentLocation.latitude, currentLocation.longitude);
       _getStaticMap(address,
           geocode: false,
-          lat: currentLocation.latitude,
-          lng: currentLocation.longitude);
+          // lat: currentLocation.latitude,
+          // lng: currentLocation.longitude
+          
+          );
     } catch (error) {
       showDialog(
           context: context,

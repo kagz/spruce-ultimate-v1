@@ -5,11 +5,11 @@ import 'package:map_view/map_view.dart';
 // import 'package:flutter/rendering.dart';
 
 import './pages/auth.dart';
-import './pages/products_admin.dart';
-import './pages/products.dart';
-import './pages/product.dart';
+import './pages/jobs_admin.dart';
+import './pages/jobs.dart';
+import './pages/job.dart';
 import './scoped-models/main.dart';
-import './models/product.dart';
+import './models/job.dart';
 import './widgets/helpers/custom_route.dart';
 import './shared/global_config.dart';
 
@@ -55,9 +55,9 @@ class _MyAppState extends State<MyApp> {
 
         routes: {
           '/': (BuildContext context) =>
-              !_isAuthenticated ? AuthPage() : ProductsPage(_model),
+              !_isAuthenticated ? AuthPage() : JobsPage(_model),
           '/admin': (BuildContext context) =>
-              !_isAuthenticated ? AuthPage() : ProductsAdminPage(_model),
+              !_isAuthenticated ? AuthPage() : JobsAdminPage(_model),
         },
         onGenerateRoute: (RouteSettings settings) {
           if (!_isAuthenticated) {
@@ -69,15 +69,15 @@ class _MyAppState extends State<MyApp> {
           if (pathElements[0] != '') {
             return null;
           }
-          if (pathElements[1] == 'product') {
-            final String productId = pathElements[2];
-            final Product product =
-                _model.allProducts.firstWhere((Product product) {
-              return product.id == productId;
+          if (pathElements[1] == 'job') {
+            final String jobId = pathElements[2];
+            final Job job =
+                _model.allJobs.firstWhere((Job job) {
+              return job.id == jobId;
             });
             return CustomRoute<bool>(
               builder: (BuildContext context) =>
-                  !_isAuthenticated ? AuthPage() : ProductPage(product),
+                  !_isAuthenticated ? AuthPage() : JobPage(job),
             );
           }
           return null;
@@ -85,7 +85,7 @@ class _MyAppState extends State<MyApp> {
         onUnknownRoute: (RouteSettings settings) {
           return MaterialPageRoute(
               builder: (BuildContext context) =>
-                  !_isAuthenticated ? AuthPage() : ProductsPage(_model));
+                  !_isAuthenticated ? AuthPage() : JobsPage(_model));
         },
       ),
     );

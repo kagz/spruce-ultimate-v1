@@ -2,25 +2,27 @@ import 'package:flutter/material.dart';
 
 import './location_data.dart';
 
-class Product {
+class Job {
   final String id;
   final String title;
   final String description;
-  final double price;
+  final int staffs;
   final String image;
+   final String date;
   final String imagePath;
   final bool isFavorite;
-  final String userEmail;
+  final String clientname;
   final String userId;
   final LocationData location;
 
-  Product(
+  Job(
       {@required this.id,
       @required this.title,
       @required this.description,
-      @required this.price,
+      @required this.staffs,
       @required this.image,
-      @required this.userEmail,
+       @required this.date,
+      @required this.clientname,
       @required this.userId,
       @required this.location,
       @required this.imagePath,

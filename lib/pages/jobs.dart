@@ -5,33 +5,33 @@ import 'package:spruce/widgets/helpers/colors.dart';
 import 'package:spruce/widgets/helpers/screensize.dart';
 import 'package:spruce/widgets/helpers/upper_curve.dart';
 
-import '../widgets/products/products.dart';
+import '../widgets/jobs/jobs.dart';
 import '../widgets/ui_elements/logout_list_tile.dart';
 import '../scoped-models/main.dart';
-import 'product.dart';
-import 'product_edit.dart';
+import 'job.dart';
+import 'job_edit.dart';
 
 Screen size;
 
-class ProductsPage extends StatefulWidget {
+class JobsPage extends StatefulWidget {
   final MainModel model;
 
-  ProductsPage(this.model);
+  JobsPage(this.model);
 
   @override
   State<StatefulWidget> createState() {
-    return _ProductsPageState();
+    return _JobsPageState();
   }
 }
 
-class _ProductsPageState extends State<ProductsPage> {
+class _JobsPageState extends State<JobsPage> {
   PageController _pageController;
   int _page = 0;
 
   @override
   initState() {
     _pageController = PageController();
-    widget.model.fetchProducts();
+    widget.model.fetchJobs();
     super.initState();
   }
 
@@ -51,17 +51,17 @@ class _ProductsPageState extends State<ProductsPage> {
     );
   }
 
-  Widget _buildProductsList() {
+  Widget _buildJobsList() {
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
-        Widget content = Center(child: Text('No Products Found!'));
-        if (model.displayedProducts.length > 0 && !model.isLoading) {
-          content = Products();
+        Widget content = Center(child: Text('No Jobs Found!'));
+        if (model.displayedJobs.length > 0 && !model.isLoading) {
+          content = Jobs();
         } else if (model.isLoading) {
           content = Center(child: CircularProgressIndicator());
         }
         return RefreshIndicator(
-          onRefresh: model.fetchProducts,
+          onRefresh: model.fetchJobs,
           child: content,
         );
       },
@@ -101,15 +101,15 @@ class _ProductsPageState extends State<ProductsPage> {
           )
         ],
       ),
-      // body: _buildProductsList(),
+      // body: _buildJobsList(),
 
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: onPageChanged,
         children: <Widget>[
-          _buildProductsList(),
-          ProductEditPage(),
+          _buildJobsList(),
+          JobEditPage(),
         ],
       ),
 

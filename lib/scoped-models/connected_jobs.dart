@@ -10,49 +10,49 @@ import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:spruce/shared/global_config.dart';
 
-import '../models/product.dart';
+import '../models/job.dart';
 import '../models/user.dart';
 import '../models/auth.dart';
 import '../models/location_data.dart';
 
-class ConnectedProductsModel extends Model {
-  List<Product> _products = [];
-  String _selProductId;
+class ConnectedJobsModel extends Model {
+  List<Job> _jobs = [];
+  String _selJobId;
   User _authenticatedUser;
   bool _isLoading = false;
 }
 
-class ProductsModel extends ConnectedProductsModel {
+class JobsModel extends ConnectedJobsModel {
   bool _showFavorites = false;
 
-  List<Product> get allProducts {
-    return List.from(_products);
+  List<Job> get allJobs {
+    return List.from(_jobs);
   }
 
-  List<Product> get displayedProducts {
+  List<Job> get displayedJobs {
     if (_showFavorites) {
-      return _products.where((Product product) => product.isFavorite).toList();
+      return _jobs.where((Job job) => job.isFavorite).toList();
     }
-    return List.from(_products);
+    return List.from(_jobs);
   }
 
-  int get selectedProductIndex {
-    return _products.indexWhere((Product product) {
-      return product.id == _selProductId;
+  int get selectedJobIndex {
+    return _jobs.indexWhere((Job job) {
+      return job.id == _selJobId;
     });
   }
 
-  String get selectedProductId {
-    return _selProductId;
+  String get selectedJobId {
+    return _selJobId;
   }
 
-  Product get selectedProduct {
-    if (selectedProductId == null) {
+  Job get selectedJob {
+    if (selectedJobId == null) {
       return null;
     }
 
-    return _products.firstWhere((Product product) {
-      return product.id == _selProductId;
+    return _jobs.firstWhere((Job job) {
+      return job.id == _selJobId;
     });
   }
 
@@ -98,8 +98,8 @@ class ProductsModel extends ConnectedProductsModel {
     }
   }
 
-  Future<bool> addProduct(String title, String description, File image,
-      double price, LocationData locData) async {
+  Future<bool> addJob(String title, String date,String description,  String clientname,File image,
+      int staffs, LocationData locData) async {
     _isLoading = true;
     notifyListeners();
     final uploadData = await uploadImage(image);
@@ -109,22 +109,23 @@ class ProductsModel extends ConnectedProductsModel {
       return false;
     }
 
-    final Map<String, dynamic> productData = {
+    final Map<String, dynamic> jobData = {
       'title': title,
       'description': description,
-      'price': price,
-      'userEmail': _authenticatedUser.email,
+      'staffs': staffs,
+      'date':date,
+      'clientname': clientname,
       'userId': _authenticatedUser.id,
       'imagePath': uploadData['imagePath'],
       'imageUrl': uploadData['imageUrl'],
-      'loc_lat': locData.latitude,
-      'loc_lng': locData.longitude,
-      'loc_address': locData.address
+      // 'loc_lat': locData.latitude,
+      // 'loc_lng': locData.longitude,
+      'location': locData.address
     };
     try {
       final http.Response response = await http.post(
-          '$CRUD_ENDPOINT/products.json?auth=${_authenticatedUser.token}',
-          body: json.encode(productData));
+          '$CRUD_ENDPOINT/jobs.json?auth=${_authenticatedUser.token}',
+          body: json.encode(jobData));
 
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
@@ -132,17 +133,18 @@ class ProductsModel extends ConnectedProductsModel {
         return false;
       }
       final Map<String, dynamic> responseData = json.decode(response.body);
-      final Product newProduct = Product(
+      final Job newJob = Job(
           id: responseData['name'],
           title: title,
+          date:date,
           description: description,
           image: uploadData['imageUrl'],
           imagePath: uploadData['imagePath'],
-          price: price,
+          staffs: staffs,
           location: locData,
-          userEmail: _authenticatedUser.email,
+          clientname: clientname,
           userId: _authenticatedUser.id);
-      _products.add(newProduct);
+      _jobs.add(newJob);
       _isLoading = false;
       notifyListeners();
       return true;
@@ -153,12 +155,12 @@ class ProductsModel extends ConnectedProductsModel {
     }
   }
 
-  Future<bool> updateProduct(String title, String description, File image,
-      double price, LocationData locData) async {
+  Future<bool> updateJob(String title, String description, String clientname,File image,
+      int staffs, LocationData locData) async {
     _isLoading = true;
     notifyListeners();
-    String imageUrl = selectedProduct.image;
-    String imagePath = selectedProduct.imagePath;
+    String imageUrl = selectedJob.image;
+    String imagePath = selectedJob.imagePath;
     if (image != null) {
       final uploadData = await uploadImage(image);
 
@@ -175,29 +177,29 @@ class ProductsModel extends ConnectedProductsModel {
       'description': description,
       'imageUrl': imageUrl,
       'imagePath': imagePath,
-      'price': price,
-      'loc_lat': locData.latitude,
-      'loc_lng': locData.longitude,
-      'loc_address': locData.address,
-      'userEmail': selectedProduct.userEmail,
-      'userId': selectedProduct.userId
+      'staffs': staffs,
+      // 'loc_lat': locData.latitude,
+      // 'loc_lng': locData.longitude,
+      'location': locData.address,
+      'clientName': clientname,
+      'userId': selectedJob.userId
     };
     try {
       await http.put(
-          '$CRUD_ENDPOINT/products/${selectedProduct.id}.json?auth=${_authenticatedUser.token}',
+          '$CRUD_ENDPOINT/jobs/${selectedJob.id}.json?auth=${_authenticatedUser.token}',
           body: json.encode(updateData));
       _isLoading = false;
-      final Product updatedProduct = Product(
-          id: selectedProduct.id,
+      final Job updatedJob = Job(
+          id: selectedJob.id,
           title: title,
           description: description,
           image: imageUrl,
           imagePath: imagePath,
-          price: price,
+          staffs: staffs,
           location: locData,
-          userEmail: selectedProduct.userEmail,
-          userId: selectedProduct.userId);
-      _products[selectedProductIndex] = updatedProduct;
+          clientname: clientname,
+          userId: selectedJob.userId);
+      _jobs[selectedJobIndex] = updatedJob;
       notifyListeners();
       return true;
     } catch (error) {
@@ -207,15 +209,15 @@ class ProductsModel extends ConnectedProductsModel {
     }
   }
 
-  Future<bool> deleteProduct() {
+  Future<bool> deleteJob() {
     _isLoading = true;
-    final deletedProductId = selectedProduct.id;
-    _products.removeAt(selectedProductIndex);
-    _selProductId = null;
+    final deletedJobId = selectedJob.id;
+    _jobs.removeAt(selectedJobIndex);
+    _selJobId = null;
     notifyListeners();
     return http
         .delete(
-            '$CRUD_ENDPOINT/products/$deletedProductId.json?auth=${_authenticatedUser.token}')
+            '$CRUD_ENDPOINT/jobs/$deletedJobId.json?auth=${_authenticatedUser.token}')
         .then((http.Response response) {
       _isLoading = false;
       notifyListeners();
@@ -227,51 +229,57 @@ class ProductsModel extends ConnectedProductsModel {
     });
   }
 
-  Future<Null> fetchProducts({onlyForUser = false, clearExisting = false}) {
+  Future<Null> fetchJobs({onlyForUser = false, clearExisting = false}) {
     _isLoading = true;
     if (clearExisting) {
-      _products = [];
+      _jobs = [];
     }
 
     notifyListeners();
     return http
-        .get('$CRUD_ENDPOINT/products.json?auth=${_authenticatedUser.token}')
+        .get('$CRUD_ENDPOINT/jobs.json?auth=${_authenticatedUser.token}')
         .then<Null>((http.Response response) {
-      final List<Product> fetchedProductList = [];
-      final Map<String, dynamic> productListData = json.decode(response.body);
-      if (productListData == null) {
+      final List<Job> fetchedJobList = [];
+      final Map<String, dynamic> jobListData = json.decode(response.body);
+       print('hapa tumebeba jobzz $jobListData'); 
+      if (jobListData == null) {
         _isLoading = false;
         notifyListeners();
         return;
       }
-      productListData.forEach((String productId, dynamic productData) {
-        final Product product = Product(
-            id: productId,
-            title: productData['title'],
-            description: productData['description'],
-            image: productData['imageUrl'],
-            imagePath: productData['imagePath'],
-            price: productData['price'],
+      jobListData.forEach((String jobId, dynamic jobData) {
+        final Job job = Job(
+            id: jobId,
+            date:jobData['date'],
+            title: jobData['title'],
+            description: jobData['description'],
+            image: jobData['imageUrl'],
+            imagePath: jobData['imagePath'],
+            staffs: jobData['staffs'],
             location: LocationData(
-                address: productData['loc_address'],
-                latitude: productData['loc_lat'],
-                longitude: productData['loc_lng']),
-            userEmail: productData['userEmail'],
-            userId: productData['userId'],
-            isFavorite: productData['wishlistUsers'] == null
+                address: jobData['location'],
+                // latitude: jobData['loc_lat'],
+                // longitude: jobData['loc_lng']
+                
+                ),
+            clientname: jobData['clientname'],
+            userId: jobData['userId'],
+            isFavorite: jobData['wishlistUsers'] == null
                 ? false
-                : (productData['wishlistUsers'] as Map<String, dynamic>)
+                : (jobData['wishlistUsers'] as Map<String, dynamic>)
                     .containsKey(_authenticatedUser.id));
-        fetchedProductList.add(product);
+
+                 print('hapa tumebeba jobs $jobData');     
+        fetchedJobList.add(job);
       });
-      _products = onlyForUser
-          ? fetchedProductList.where((Product product) {
-              return product.userId == _authenticatedUser.id;
+      _jobs = onlyForUser
+          ? fetchedJobList.where((Job job) {
+              return job.userId == _authenticatedUser.id;
             }).toList()
-          : fetchedProductList;
+          : fetchedJobList;
       _isLoading = false;
       notifyListeners();
-      _selProductId = null;
+      _selJobId = null;
     }).catchError((error) {
       _isLoading = false;
       notifyListeners();
@@ -279,52 +287,54 @@ class ProductsModel extends ConnectedProductsModel {
     });
   }
 
-  void toggleProductFavoriteStatus() async {
-    final bool isCurrentlyFavorite = selectedProduct.isFavorite;
+  void toggleJobFavoriteStatus() async {
+    final bool isCurrentlyFavorite = selectedJob.isFavorite;
     final bool newFavoriteStatus = !isCurrentlyFavorite;
-    final Product updatedProduct = Product(
-        id: selectedProduct.id,
-        title: selectedProduct.title,
-        description: selectedProduct.description,
-        price: selectedProduct.price,
-        image: selectedProduct.image,
-        imagePath: selectedProduct.imagePath,
-        location: selectedProduct.location,
-        userEmail: selectedProduct.userEmail,
-        userId: selectedProduct.userId,
+    final Job updatedJob = Job(
+        id: selectedJob.id,
+        title: selectedJob.title,
+         date: selectedJob.date,
+        description: selectedJob.description,
+        staffs: selectedJob.staffs,
+        image: selectedJob.image,
+        imagePath: selectedJob.imagePath,
+        location: selectedJob.location,
+        clientname: selectedJob.clientname,
+        userId: selectedJob.userId,
         isFavorite: newFavoriteStatus);
-    _products[selectedProductIndex] = updatedProduct;
+    _jobs[selectedJobIndex] = updatedJob;
     notifyListeners();
     http.Response response;
     if (newFavoriteStatus) {
       response = await http.put(
-          '$CRUD_ENDPOINT/products/${selectedProduct.id}/wishlistUsers/${_authenticatedUser.id}.json?auth=${_authenticatedUser.token}',
+          '$CRUD_ENDPOINT/jobs/${selectedJob.id}/wishlistUsers/${_authenticatedUser.id}.json?auth=${_authenticatedUser.token}',
           body: json.encode(true));
     } else {
       response = await http.delete(
-          '$CRUD_ENDPOINT/products/${selectedProduct.id}/wishlistUsers/${_authenticatedUser.id}.json?auth=${_authenticatedUser.token}');
+          '$CRUD_ENDPOINT/jobs/${selectedJob.id}/wishlistUsers/${_authenticatedUser.id}.json?auth=${_authenticatedUser.token}');
     }
     if (response.statusCode != 200 && response.statusCode != 201) {
-      final Product updatedProduct = Product(
-          id: selectedProduct.id,
-          title: selectedProduct.title,
-          description: selectedProduct.description,
-          price: selectedProduct.price,
-          image: selectedProduct.image,
-          imagePath: selectedProduct.imagePath,
-          location: selectedProduct.location,
-          userEmail: selectedProduct.userEmail,
-          userId: selectedProduct.userId,
+      final Job updatedJob = Job(
+          id: selectedJob.id,
+          title: selectedJob.title,
+           date: selectedJob.date,
+          description: selectedJob.description,
+          staffs: selectedJob.staffs,
+          image: selectedJob.image,
+          imagePath: selectedJob.imagePath,
+          location: selectedJob.location,
+          clientname: selectedJob.clientname,
+          userId: selectedJob.userId,
           isFavorite: !newFavoriteStatus);
-      _products[selectedProductIndex] = updatedProduct;
+      _jobs[selectedJobIndex] = updatedJob;
       notifyListeners();
     }
-    _selProductId = null;
+    _selJobId = null;
   }
 
-  void selectProduct(String productId) {
-    _selProductId = productId;
-    if (productId != null) {
+  void selectJob(String jobId) {
+    _selJobId = jobId;
+    if (jobId != null) {
       notifyListeners();
     }
   }
@@ -335,7 +345,7 @@ class ProductsModel extends ConnectedProductsModel {
   }
 }
 
-class UserModel extends ConnectedProductsModel {
+class UserModel extends ConnectedJobsModel {
   Timer _authTimer;
   PublishSubject<bool> _userSubject = PublishSubject();
 
@@ -391,7 +401,7 @@ class UserModel extends ConnectedProductsModel {
           now.add(Duration(seconds: int.parse(responseData['expiresIn'])));
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('token', responseData['idToken']);
-      prefs.setString('userEmail', email);
+      prefs.setString('clientname', email);
       prefs.setString('userId', responseData['localId']);
       prefs.setString('expiryTime', expiryTime.toIso8601String());
     } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
@@ -418,10 +428,10 @@ class UserModel extends ConnectedProductsModel {
         notifyListeners();
         return;
       }
-      final String userEmail = prefs.getString('userEmail');
+      final String clientName = prefs.getString('clientName');
       final String userId = prefs.getString('userId');
       final int tokenLifespan = parsedExpiryTime.difference(now).inSeconds;
-      _authenticatedUser = User(id: userId, email: userEmail, token: token);
+      _authenticatedUser = User(id: userId, email: clientName, token: token);
       _userSubject.add(true);
       setAuthTimeout(tokenLifespan);
       notifyListeners();
@@ -432,10 +442,10 @@ class UserModel extends ConnectedProductsModel {
     _authenticatedUser = null;
     _authTimer.cancel();
     _userSubject.add(false);
-    _selProductId = null;
+    _selJobId = null;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('token');
-    prefs.remove('userEmail');
+    prefs.remove('clientname');
     prefs.remove('userId');
   }
 
@@ -444,7 +454,7 @@ class UserModel extends ConnectedProductsModel {
   }
 }
 
-class UtilityModel extends ConnectedProductsModel {
+class UtilityModel extends ConnectedJobsModel {
   bool get isLoading {
     return _isLoading;
   }

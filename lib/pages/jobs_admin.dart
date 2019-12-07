@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import './product_edit.dart';
-import './product_list.dart';
+import './job_edit.dart';
+import './job_list.dart';
 import '../widgets/ui_elements/logout_list_tile.dart';
 import '../scoped-models/main.dart';
 
-class ProductsAdminPage extends StatelessWidget {
+class JobsAdminPage extends StatelessWidget {
   final MainModel model;
 
-  ProductsAdminPage(this.model);
+  JobsAdminPage(this.model);
 
   Widget _buildSideDrawer(BuildContext context) {
     return Drawer(
@@ -50,7 +50,7 @@ class ProductsAdminPage extends StatelessWidget {
           ),
         ),
         body: TabBarView(
-          children: <Widget>[ProductListPage(model)],
+          children: <Widget>[JobListPage(model)],
         ),
       ),
     );

@@ -38,33 +38,7 @@ class _JobFABState extends State<JobFAB> with TickerProviderStateMixin {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              height: 70.0,
-              width: 56.0,
-              alignment: FractionalOffset.topCenter,
-              child: ScaleTransition(
-                scale: CurvedAnimation(
-                    parent: _controller,
-                    curve: Interval(0.0, 1.0, curve: Curves.easeOut)),
-                child: FloatingActionButton(
-                  backgroundColor: Theme.of(context).cardColor,
-                  heroTag: 'contact',
-                  mini: true,
-                  onPressed: () async {
-                    // final url = 'mailto:${widget.job.clientname}';
-                    // if (await canLaunch(url)) {
-                    //   await launch(url);
-                    // } else {
-                    //   throw 'Could not launch!';
-                    // }
-                  },
-                  child: Icon(
-                    Icons.mail,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ),
-            ),
+          
             Container(
               height: 70.0,
               width: 56.0,

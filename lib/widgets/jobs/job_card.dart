@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:spruce/widgets/helpers/screensize.dart';
-import 'package:spruce/widgets/jobs/staffs_tag.dart';
 
-
+import './staffs_tag.dart';
 import './address_tag.dart';
 import '../ui_elements/title_default.dart';
 import '../../models/job.dart';

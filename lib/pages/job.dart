@@ -5,27 +5,27 @@ import 'package:flutter/material.dart';
 import 'package:map_view/map_view.dart';
 
 import '../widgets/ui_elements/title_default.dart';
-import '../widgets/products/product_fab.dart';
-import '../models/product.dart';
+import '../widgets/jobs/job_fab.dart';
+import '../models/job.dart';
 
-class ProductPage extends StatelessWidget {
-  final Product product;
+class JobPage extends StatelessWidget {
+  final Job job;
 
-  ProductPage(this.product);
+  JobPage(this.job);
 
   void _showMap() {
     final List<Marker> markers = <Marker>[
-      Marker('position', 'Position', product.location.latitude,
-          product.location.longitude)
+      Marker('position', 'Position', job.location.latitude,
+          job.location.longitude)
     ];
     final cameraPosition = CameraPosition(
-        Location(product.location.latitude, product.location.longitude), 14.0);
+        Location(job.location.latitude, job.location.longitude), 14.0);
     final mapView = MapView();
     mapView.show(
         MapOptions(
             initialCameraPosition: cameraPosition,
             mapViewType: MapViewType.normal,
-            title: 'Product Location'),
+            title: 'Job Location'),
         toolbarActions: [
           ToolbarAction('Close', 1),
         ]);
@@ -39,7 +39,7 @@ class ProductPage extends StatelessWidget {
     });
   }
 
-  Widget _buildAddressPriceRow(String address, double price) {
+  Widget _buildAddressStaffsRow(String address, int staffs) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -58,7 +58,7 @@ class ProductPage extends StatelessWidget {
           ),
         ),
         Text(
-          '\$' + price.toString(),
+          '\$' + staffs.toString(),
           style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
         )
       ],
@@ -75,7 +75,7 @@ class ProductPage extends StatelessWidget {
       },
       child: Scaffold(
         // appBar: AppBar(
-        //   title: Text(product.title),
+        //   title: Text(job.title),
         // ),
         body: CustomScrollView(
           slivers: <Widget>[
@@ -83,11 +83,11 @@ class ProductPage extends StatelessWidget {
               expandedHeight: 256.0,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
-                title: Text(product.title),
+                title: Text(job.title),
                 background: Hero(
-                  tag: product.id,
+                  tag: job.id,
                   child: FadeInImage(
-                    image: NetworkImage(product.image),
+                    image: NetworkImage(job.image),
                     height: 300.0,
                     fit: BoxFit.cover,
                     placeholder: AssetImage('assets/food.jpg'),
@@ -101,14 +101,14 @@ class ProductPage extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(10.0),
                     alignment: Alignment.center,
-                    child: TitleDefault(product.title),
+                    child: TitleDefault(job.title),
                   ),
-                  _buildAddressPriceRow(
-                      product.location.address, product.price),
+                  _buildAddressStaffsRow(
+                      job.location.address, job.staffs),
                   Container(
                     padding: EdgeInsets.all(10.0),
                     child: Text(
-                      product.description,
+                      job.description,
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -117,7 +117,7 @@ class ProductPage extends StatelessWidget {
             )
           ],
         ),
-        floatingActionButton: ProductFAB(product),
+        floatingActionButton: JobFAB(job),
       ),
     );
   }

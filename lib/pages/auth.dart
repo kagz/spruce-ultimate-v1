@@ -18,7 +18,7 @@ class _AuthPageState extends State<AuthPage> {
   final Map<String, dynamic> _formData = {
     'email': null,
     'password': null,
-    'acceptTerms': false
+    // 'acceptTerms': false
   };
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();

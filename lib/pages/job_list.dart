@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
-import './product_edit.dart';
+import './job_edit.dart';
 import '../scoped-models/main.dart';
 
-//solo man products
-class ProductListPage extends StatefulWidget {
+//solo man jobs
+class JobListPage extends StatefulWidget {
   final MainModel model;
 
-  ProductListPage(this.model);
+  JobListPage(this.model);
 
   @override
   State<StatefulWidget> createState() {
-    return _ProductListPageState();
+    return _JobListPageState();
   }
 }
 
-class _ProductListPageState extends State<ProductListPage> {
+class _JobListPageState extends State<JobListPage> {
   @override
   initState() {
-    widget.model.fetchProducts(onlyForUser: true, clearExisting: true);
+    widget.model.fetchJobs(onlyForUser: true, clearExisting: true);
     super.initState();
   }
 
@@ -28,15 +28,15 @@ class _ProductListPageState extends State<ProductListPage> {
     return IconButton(
       icon: Icon(Icons.edit),
       onPressed: () {
-        model.selectProduct(model.allProducts[index].id);
+        model.selectJob(model.allJobs[index].id);
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (BuildContext context) {
-              return ProductEditPage();
+              return JobEditPage();
             },
           ),
         ).then((_) {
-          model.selectProduct(null);
+          model.selectJob(null);
         });
       },
     );
@@ -49,11 +49,11 @@ class _ProductListPageState extends State<ProductListPage> {
         return ListView.builder(
           itemBuilder: (BuildContext context, int index) {
             return Dismissible(
-              key: Key(model.allProducts[index].title),
+              key: Key(model.allJobs[index].title),
               onDismissed: (DismissDirection direction) {
                 if (direction == DismissDirection.endToStart) {
-                  model.selectProduct(model.allProducts[index].id);
-                  model.deleteProduct();
+                  model.selectJob(model.allJobs[index].id);
+                  model.deleteJob();
                 } else if (direction == DismissDirection.startToEnd) {
                   print('Swiped start to end');
                 } else {
@@ -66,11 +66,11 @@ class _ProductListPageState extends State<ProductListPage> {
                   ListTile(
                     leading: CircleAvatar(
                       backgroundImage:
-                          NetworkImage(model.allProducts[index].image),
+                          NetworkImage(model.allJobs[index].image),
                     ),
-                    title: Text(model.allProducts[index].title),
+                    title: Text(model.allJobs[index].title),
                     subtitle:
-                        Text('\$${model.allProducts[index].price.toString()}'),
+                        Text('\$${model.allJobs[index].staffs.toString()}'),
                     trailing: _buildEditButton(context, index, model),
                   ),
                   Divider()
@@ -78,7 +78,7 @@ class _ProductListPageState extends State<ProductListPage> {
               ),
             );
           },
-          itemCount: model.allProducts.length,
+          itemCount: model.allJobs.length,
         );
       },
     );
